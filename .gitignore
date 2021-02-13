@@ -1,5 +1,5 @@
 # Init file
-.ini
+*.ini
 # vim files
 *~
 # vs code workspace
