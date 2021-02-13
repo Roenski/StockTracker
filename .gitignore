@@ -1,6 +1,9 @@
 # Init file
 .ini
-
+# vim files
+*~
+# vs code workspace
+*.code-workspace
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
