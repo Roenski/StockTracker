@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from main_win import Ui_MainWindow
 from menu import Menu
 from add_trans import AddTransactionForm
+from db import Database
 
 if __name__ == "__main__":
     import sys
@@ -27,6 +28,9 @@ if __name__ == "__main__":
 
     # Set the main window as central widget
     MainWindow.setCentralWidget(main_menu)
+
+    database = Database('db.ini')
+    database.connect(ui.statusbar.showMessage)
 
 
     MainWindow.show()
