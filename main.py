@@ -10,11 +10,22 @@ class MainWin(QtWidgets.QMainWindow):
         super().__init__(*args, **kwargs)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.central_widget = QtWidgets.QStackedWidget()
+        self.setCentralWidget(self.central_widget)
         self.main_menu = Menu()
         self.add_trans = AddTransactionForm()
+        self.central_widget.addWidget(self.main_menu)
+        self.central_widget.addWidget(self.add_trans)
 
         self.ui.actionExit.triggered.connect(self.close)
-        #self.main_menu.clicked.connect(self.close)
+        self.main_menu.exited.connect(self.close)
+        self.main_menu.ui.button_add_transaction.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.add_trans))
+        self.add_trans.ui.pushButton_cancel.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.main_menu))
+        self.central_widget.setCurrentWidget(self.main_menu)
+        self.database = Database('db.ini')
+        self.database.connect(self.ui.statusbar.showMessage)
 
 if __name__ == "__main__":
     import sys
