@@ -24,6 +24,7 @@ class MainWin(QtWidgets.QMainWindow):
         self.add_trans.ui.pushButton_cancel.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
+
         self.database = Database('db.ini')
         self.database.connect(self.ui.statusbar.showMessage)
 
