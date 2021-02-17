@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets 
-from main_win import Ui_MainWindow
+from gen.main_win import Ui_MainWindow
 from menu import Menu
 from add_trans import AddTransactionForm
 from db import Database

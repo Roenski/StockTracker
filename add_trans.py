@@ -1,4 +1,4 @@
-from add_trans_win import Ui_Form
+from gen.add_trans_win import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 from datetime import date as dt
 

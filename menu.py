@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from menu_win import Ui_Form
+from gen.menu_win import Ui_Form
 
 class Menu(QtWidgets.QWidget):
 
