@@ -37,13 +37,15 @@ class Transaction(QObject):
         self.tbroker = tbroker
 
     # Run this after a successful run of self.verify
-    def compose_sql(self):
+    # tid is the transaction ID, generate one with database.cur.fetchone()[0]
+    def compose_sql(self, tid):
         try:
             num_of_values = 12
             sql_msg =   "INSERT INTO transactions VALUES ("
+            sql_msg += "DEFAULT, " 
             for i in range(0, num_of_values - 1):
-                sql_msg += "{}, "
-            sql_msg += "{})"
+                sql_msg += "'{}', "
+            sql_msg += "'{}')"
             sql_msg = sql_msg.format(self.tdate, self.ttype, self.tbs, self.sname,
                                     self.squantity, self.sprice, self.spricecurrency,
                                     self.spriceexchange, self.sfee, self.sfeecurrency,
@@ -87,7 +89,7 @@ class Transaction(QObject):
             self.erronous.emit("Date cannot be in the future!")
             raise InvalidValueError
         else:
-            return "TO_DATE({}/{}/{})".format(date.year(), date.month(), date.day())
+            return "{}/{}/{}".format(date.year(), date.month(), date.day())
     def verify_ttype(self, ttype):
         if not ttype in ttypes:
             self.erronous.emit("Wrong type of commodity")
@@ -157,8 +159,10 @@ class Transaction(QObject):
 
 class AddTransactionForm(QtWidgets.QWidget):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, db):
+        super().__init__()
+        # Database to add transactions to
+        self.db = db
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.ui.pushButton_add.clicked.connect(self.add_transaction)
@@ -190,7 +194,9 @@ class AddTransactionForm(QtWidgets.QWidget):
         trans.erronous.connect(self.errorprinter)
         
         if trans.verify():
-            sql_msg = trans.compose_sql()
+            tid = 0
+            sql_msg = trans.compose_sql(tid)
+            self.db.insert(sql_msg)
             print(sql_msg)
 
     def errorprinter(self, er_msg):

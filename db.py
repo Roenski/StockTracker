@@ -32,6 +32,7 @@ class Database():
 
     def insert(self, sql_msg):
         self.cur.execute(sql_msg)
+        self.conn.commit()
 
     def connect_db(self):
         try:
@@ -49,6 +50,7 @@ class Database():
             self.status_func(str(db_version))
             
         except (Exception, psycopg2.DatabaseError) as error:
+
             self.status_func(error)
 
     def close(self):

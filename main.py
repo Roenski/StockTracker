@@ -13,7 +13,9 @@ class MainWin(QtWidgets.QMainWindow):
         self.central_widget = QtWidgets.QStackedWidget()
         self.setCentralWidget(self.central_widget)
         self.main_menu = Menu()
-        self.add_trans = AddTransactionForm()
+        self.database = Database('db.ini', self.ui.statusbar.showMessage)
+        self.database.connect_db()
+        self.add_trans = AddTransactionForm(self.database)
         self.central_widget.addWidget(self.main_menu)
         self.central_widget.addWidget(self.add_trans)
 
@@ -25,8 +27,6 @@ class MainWin(QtWidgets.QMainWindow):
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
 
-        self.database = Database('db.ini', self.ui.statusbar.showMessage)
-        self.database.connect_db()
 
     def closeEvent(self, event):
         self.database.close()
