@@ -25,8 +25,12 @@ class MainWin(QtWidgets.QMainWindow):
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
 
-        self.database = Database('db.ini')
-        self.database.connect(self.ui.statusbar.showMessage)
+        self.database = Database('db.ini', self.ui.statusbar.showMessage)
+        self.database.connect_db()
+
+    def closeEvent(self, event):
+        self.database.close()
+        self.close()
 
 if __name__ == "__main__":
     import sys

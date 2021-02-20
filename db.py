@@ -1,13 +1,17 @@
 import configparser
 import psycopg2
+from add_trans import Transaction
 
 
 class Database():
 
-    def __init__(self, filename):
+    # filename = .ini file for the database
+    # status_func = function, what to print status messages with
+    def __init__(self, filename, status_func=print):
         self.conn = None
         self.cur = None
         self.ini_file = filename
+        self.status_func = status_func
 
     def config(self):
         parser = configparser.ConfigParser()
@@ -26,25 +30,30 @@ class Database():
 
         return db
 
-    def connect(self, status_func):
+    def insert(self, sql_msg):
+        self.cur.execute(sql_msg)
+
+    def connect_db(self):
         try:
             params = self.config()
 
-            status_func('Connecting to the PostgreSQL database...')
+            self.status_func('Connecting to the PostgreSQL database...')
             self.conn = psycopg2.connect(**params)
 
             self.cur = self.conn.cursor()
 
-            status_func("PostgreSQL database version:")
+            self.status_func("PostgreSQL database version:")
             self.cur.execute("SELECT version()")
 
             db_version = self.cur.fetchone()
-            status_func(str(db_version))
+            self.status_func(str(db_version))
             
-            self.cur.close()
         except (Exception, psycopg2.DatabaseError) as error:
-            status_func(error)
-        finally:
-            if self.conn is not None:
-                self.conn.close()
-                status_func('Database connection closed.')
+            self.status_func(error)
+
+    def close(self):
+        if self.cur is not None:
+            self.cur.close()
+        if self.conn is not None:
+            self.conn.close()
+            self.status_func("Database connection closed.")
