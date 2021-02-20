@@ -1,6 +1,7 @@
 from gen.add_trans_win import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
+from QtWidgets import QMessageBox
 from datetime import date as dt
 
 # These should probably come from a file in the future
@@ -157,17 +158,18 @@ class AddTransactionForm(QtWidgets.QWidget):
             self.ui.line_sFeeExchange.text(),
             self.ui.combo_tBroker.currentText()
         )
+        # In the case of an error, the error message is sent
+        # via a pyqt signal
         trans.erronous.connect(self.errorprinter)
         if not trans.verify():
-            self.errorprinter("Did you leave some fields blank? Don't.")
+            self.errorprinter("Did you leave some fields blank?")
 
     def errorprinter(self, er_msg):
-        #print(msg)
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
         msg.setText("Error adding value")
         msg.setInformativeText(er_msg)
-        msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
 
 
