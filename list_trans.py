@@ -2,6 +2,8 @@ from gen.list_trans_win import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 
+ENTRIES_PER_PAGE = 5
+NO_OF_COLUMNS = 13
 
 class ListTransactionForm(QtWidgets.QWidget):
     def __init__(self, database):
@@ -9,41 +11,38 @@ class ListTransactionForm(QtWidgets.QWidget):
         self.ui = Ui_Form() 
         self.ui.setupUi(self)
         self.db = database
-        self.list = ListTransactionTable()
-        self.ui.list_tbl.setModel(self.list)
+
+        self.list_trans = None
+        self.page = 0
+        self.MAX_PAGE = False
+
+        self.ui.next_btn.clicked.connect(self.next_page)
+        self.ui.prev_btn.clicked.connect(self.prev_page)
 
     def load_entries(self):
-        entries = self.db.select_all(10)
-        #self.list.data = entries
-        print(entries)
+        entries = self.db.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
+        self.list_trans = ListTransactionTable(entries)
+        self.ui.list_tbl.setModel(self.list_trans)
+        if len(entries) < ENTRIES_PER_PAGE:
+            self.MAX_PAGE = True
+        else:
+            self.MAX_PAGE = False
+
+    def next_page(self):
+        if not self.MAX_PAGE:
+            self.page += 1
+            self.load_entries()
+
+    def prev_page(self):
+        if self.page > 0:
+            self.page -= 1
+            self.load_entries()
 
 class ListTransactionTable(QtCore.QAbstractTableModel):
 
-    def __init__(self):
+    def __init__(self, data_init):
         super().__init__()
-        self._data = [
-          [4, 9, 2],
-          [1, 0, 0],
-          [3, 5, 0],
-          [3, 3, 2],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-          [7, 8, 9],
-        ] 
+        self._data = data_init
         
     def data(self, index, role):
         if role == Qt.DisplayRole:
@@ -54,5 +53,3 @@ class ListTransactionTable(QtCore.QAbstractTableModel):
 
     def columnCount(self, index):
         return len(self._data[0])
-
-        ##self.ui.transList.
