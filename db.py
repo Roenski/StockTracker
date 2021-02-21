@@ -34,6 +34,12 @@ class Database():
         self.cur.execute(sql_msg)
         self.conn.commit()
 
+    def select_all(self, num):
+        sql_msg = "SELECT * FROM transactions " \
+        + "ORDER BY tdate ASC LIMIT {}".format(num)
+        self.cur.execute(sql_msg)
+        return self.cur.fetchall()
+
     def connect_db(self):
         try:
             params = self.config()

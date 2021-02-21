@@ -7,7 +7,7 @@ from datetime import date as dt
 # These should probably come from a file in the future
 ttypes = ["Stock", "ETF", "Fund", "Crypto"]
 tBSs = ["Buy", "Sell"]
-sNames = ["AMD", "OTE1V", "SXR8", "DIS", "EUNK"] # Make a database for these!
+sNames = ["Test", "AMD", "OTE1V", "SXR8", "DIS", "EUNK"] # Make a database for these!
 currencies = ["USD", "EUR", "SEK"]
 tBrokers = ["Nordnet", "OP", "Degiro", "Coinmotion"]
 

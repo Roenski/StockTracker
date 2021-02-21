@@ -14,10 +14,23 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(888, 502)
-        self.transList = QtWidgets.QTableView(Form)
-        self.transList.setGeometry(QtCore.QRect(10, 10, 871, 491))
-        self.transList.setObjectName("transList")
+        Form.resize(1138, 552)
+        Form.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.list_tbl = QtWidgets.QTableView(Form)
+        self.list_tbl.setGeometry(QtCore.QRect(10, 10, 871, 491))
+        self.list_tbl.setObjectName("list_tbl")
+        self.delete_btn = QtWidgets.QPushButton(Form)
+        self.delete_btn.setGeometry(QtCore.QRect(920, 430, 181, 31))
+        self.delete_btn.setObjectName("delete_btn")
+        self.next_btn = QtWidgets.QPushButton(Form)
+        self.next_btn.setGeometry(QtCore.QRect(800, 510, 80, 31))
+        self.next_btn.setObjectName("next_btn")
+        self.prev_btn = QtWidgets.QPushButton(Form)
+        self.prev_btn.setGeometry(QtCore.QRect(10, 510, 80, 31))
+        self.prev_btn.setObjectName("prev_btn")
+        self.return_btn = QtWidgets.QPushButton(Form)
+        self.return_btn.setGeometry(QtCore.QRect(920, 470, 181, 31))
+        self.return_btn.setObjectName("return_btn")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -25,6 +38,10 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
+        self.delete_btn.setText(_translate("Form", "Delete entry"))
+        self.next_btn.setText(_translate("Form", "Next 10 >"))
+        self.prev_btn.setText(_translate("Form", "< Prev 10"))
+        self.return_btn.setText(_translate("Form", "Return"))
 
 
 if __name__ == "__main__":

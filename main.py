@@ -25,12 +25,16 @@ class MainWin(QtWidgets.QMainWindow):
         self.main_menu.exited.connect(self.close)
         self.main_menu.ui.button_add_transaction.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.add_trans))
-        self.main_menu.ui.button_list_transactions.clicked.connect \
-            (lambda: self.central_widget.setCurrentWidget(self.list_trans))
+        self.main_menu.ui.button_list_transactions.clicked.connect(self.list_view_event)
         self.add_trans.ui.pushButton_cancel.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.main_menu))
+        self.list_trans.ui.return_btn.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
 
+    def list_view_event(self):
+        self.list_trans.load_entries()
+        self.central_widget.setCurrentWidget(self.list_trans)
 
     def closeEvent(self, event):
         self.database.close()

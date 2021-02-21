@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>502</height>
+    <width>1138</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTableWidget" name="transList">
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <widget class="QTableView" name="list_tbl">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -21,6 +24,58 @@
      <width>871</width>
      <height>491</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delete_btn">
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>430</y>
+     <width>181</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Delete entry</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="next_btn">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>510</y>
+     <width>80</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Next 10 &gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="prev_btn">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>510</y>
+     <width>80</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt; Prev 10</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="return_btn">
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>470</y>
+     <width>181</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Return</string>
    </property>
   </widget>
  </widget>
