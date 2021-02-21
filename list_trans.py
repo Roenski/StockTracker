@@ -56,7 +56,7 @@ class ListTransactionTable(QtCore.QAbstractTableModel):
 
     def parse_data(self, data_up):
         data_p = []
-        for i in range(0, ENTRIES_PER_PAGE):
+        for i in range(0, len(data_up)):
             entry = list(data_up[i])
             entry[1] = str(entry[1])
             entry[5] = str(entry[5])
