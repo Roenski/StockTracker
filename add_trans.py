@@ -37,8 +37,7 @@ class Transaction(QObject):
         self.tbroker = tbroker
 
     # Run this after a successful run of self.verify
-    # tid is the transaction ID, generate one with database.cur.fetchone()[0]
-    def compose_sql(self, tid):
+    def compose_sql(self):
         try:
             num_of_values = 12
             sql_msg =   "INSERT INTO transactions VALUES ("
@@ -194,8 +193,7 @@ class AddTransactionForm(QtWidgets.QWidget):
         trans.erronous.connect(self.errorprinter)
         
         if trans.verify():
-            tid = 0
-            sql_msg = trans.compose_sql(tid)
+            sql_msg = trans.compose_sql()
             self.db.insert(sql_msg)
             print(sql_msg)
 
