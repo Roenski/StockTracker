@@ -42,7 +42,7 @@ class ListTransactionTable(QtCore.QAbstractTableModel):
 
     def __init__(self, data_init):
         super().__init__()
-        self._data = data_init
+        self._data = self.parse_data(data_init)
         
     def data(self, index, role):
         if role == Qt.DisplayRole:
@@ -53,3 +53,17 @@ class ListTransactionTable(QtCore.QAbstractTableModel):
 
     def columnCount(self, index):
         return len(self._data[0])
+
+    def parse_data(self, data_up):
+        data_p = []
+        for i in range(0, ENTRIES_PER_PAGE):
+            entry = list(data_up[i])
+            entry[1] = str(entry[1])
+            entry[5] = str(entry[5])
+            entry[6] = str(entry[6])
+            entry[8] = str(entry[8])
+            entry[9] = str(entry[9])
+            entry[11] = str(entry[11])
+            data_p.append(entry)
+        return data_p
+
