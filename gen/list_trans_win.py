@@ -18,6 +18,8 @@ class Ui_Form(object):
         Form.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.list_tbl = QtWidgets.QTableView(Form)
         self.list_tbl.setGeometry(QtCore.QRect(10, 10, 871, 491))
+        self.list_tbl.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.list_tbl.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.list_tbl.setObjectName("list_tbl")
         self.delete_btn = QtWidgets.QPushButton(Form)
         self.delete_btn.setGeometry(QtCore.QRect(920, 430, 181, 31))

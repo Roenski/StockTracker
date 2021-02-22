@@ -1,8 +1,9 @@
 from gen.list_trans_win import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
+from PyQt5.QtWidgets import QMessageBox
 
-ENTRIES_PER_PAGE = 5
+ENTRIES_PER_PAGE = 10
 NO_OF_COLUMNS = 13
 
 class ListTransactionForm(QtWidgets.QWidget):
@@ -18,6 +19,7 @@ class ListTransactionForm(QtWidgets.QWidget):
 
         self.ui.next_btn.clicked.connect(self.next_page)
         self.ui.prev_btn.clicked.connect(self.prev_page)
+        self.ui.delete_btn.clicked.connect(self.delete_entry)
 
     def load_entries(self):
         entries = self.db.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
@@ -28,6 +30,29 @@ class ListTransactionForm(QtWidgets.QWidget):
         else:
             self.MAX_PAGE = False
 
+    def delete_entry(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+
+        # this snippet gets the tid of the current selection
+        row = self.ui.list_tbl.model().index(self.ui.list_tbl.currentIndex().row(),0)
+        print(row.row())
+        print(row.data())
+
+        msg.setText("Are you sure you want to delete this entry?")
+        msg.setStandardButtons(QMessageBox.Yes|QMessageBox.Cancel)
+        #msg.buttonClicked.connect(self.delete_confirm)
+        answer = msg.exec_()
+        if answer == QMessageBox.Yes:
+            self.db.delete_entry(row.data())
+            self.load_entries()
+
+    def delete_confirm(self, i):
+        if i == QMessageBox.Yes: 
+            print("Jes")
+        elif i == QMessageBox.Cancel:
+            print("kansel")
+        print(i)
     def next_page(self):
         if not self.MAX_PAGE:
             self.page += 1

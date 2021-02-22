@@ -40,6 +40,10 @@ class Database():
         self.cur.execute(sql_msg)
         return self.cur.fetchall()
 
+    def delete_entry(self, tid):
+        sql_msg = "DELETE FROM transactions WHERE tid={}".format(tid)
+        self.cur.execute(sql_msg)
+
     def connect_db(self):
         try:
             params = self.config()
