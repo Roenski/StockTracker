@@ -43,6 +43,7 @@ class Database():
     def delete_entry(self, tid):
         sql_msg = "DELETE FROM transactions WHERE tid={}".format(tid)
         self.cur.execute(sql_msg)
+        self.conn.commit()
 
     def connect_db(self):
         try:
