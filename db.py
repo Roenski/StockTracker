@@ -3,7 +3,16 @@ import psycopg2
 from add_trans import Transaction
 
 
-class Database():
+class Database:
+
+    def __init__(self, name, filename, status_func=print):
+        self.conn = None
+        self.cur = None
+        self.name = name
+        self.ini_file = filename
+        self.status_func = status_func
+
+class TransactionDB():
 
     # filename = .ini file for the database
     # status_func = function, what to print status messages with
