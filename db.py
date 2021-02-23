@@ -1,23 +1,25 @@
 import configparser
 import psycopg2
-from add_trans import Transaction
 
 
-class Database():
+class Database:
 
-    # filename = .ini file for the database
-    # status_func = function, what to print status messages with
-    def __init__(self, filename, status_func=print):
+    def __init__(self, name, filename, status_func=print):
         self.conn = None
         self.cur = None
+        self.name = name
         self.ini_file = filename
         self.status_func = status_func
+
+    def insert(self, sql_msg):
+        self.cur.execute(sql_msg)
+        self.conn.commit()
 
     def config(self):
         parser = configparser.ConfigParser()
         parser.read(self.ini_file)
 
-        section = 'postgresql'
+        section = self.name
 
         # get section, default to postgresql
         db = {}
@@ -29,21 +31,6 @@ class Database():
             raise Exception('Section {0} not found in the {1} file'.format(section, self.ini_file))
 
         return db
-
-    def insert(self, sql_msg):
-        self.cur.execute(sql_msg)
-        self.conn.commit()
-
-    def select_all(self, num, offset=0):
-        sql_msg = "SELECT * FROM transactions " \
-        + "ORDER BY tid ASC LIMIT {} OFFSET {}".format(num, offset)
-        self.cur.execute(sql_msg)
-        return self.cur.fetchall()
-
-    def delete_entry(self, tid):
-        sql_msg = "DELETE FROM transactions WHERE tid={}".format(tid)
-        self.cur.execute(sql_msg)
-        self.conn.commit()
 
     def connect_db(self):
         try:
@@ -70,3 +57,23 @@ class Database():
         if self.conn is not None:
             self.conn.close()
             self.status_func("Database connection closed.")
+
+class TransactionDB(Database):
+
+    # filename = .ini file for the database
+    # status_func = function, what to print status messages with
+    def __init__(self, name, filename, status_func=print):
+        super().__init__(name, filename, status_func)
+
+    def select_all(self, num, offset=0):
+        sql_msg = "SELECT * FROM transactions " \
+        + "ORDER BY tid ASC LIMIT {} OFFSET {}".format(num, offset)
+        self.cur.execute(sql_msg)
+        return self.cur.fetchall()
+
+    def delete_entry(self, tid):
+        sql_msg = "DELETE FROM {} WHERE tid={}".format(self.name, tid)
+        self.cur.execute(sql_msg)
+        self.conn.commit()
+
+
