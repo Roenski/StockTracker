@@ -20,6 +20,8 @@ class ListTransactionForm(QtWidgets.QWidget):
         self.ui.next_btn.clicked.connect(self.next_page)
         self.ui.prev_btn.clicked.connect(self.prev_page)
         self.ui.delete_btn.clicked.connect(self.delete_entry)
+        
+        self.ui.list_tbl.resizeRowToContents(2)
 
     def load_entries(self):
         entries = self.db.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
@@ -68,10 +70,19 @@ class ListTransactionTable(QtCore.QAbstractTableModel):
     def __init__(self, data_init):
         super().__init__()
         self._data = self.parse_data(data_init)
+        self._headers = ["Transation ID", "Date", "Type", "Buy/Sell",
+                            "Stock Name", "Quantity", "Price",
+                            "Currency", "Exchange Rate", "Fee",
+                            "Fee Currency", "Exchange Rate", "Broker"]
         
     def data(self, index, role):
         if role == Qt.DisplayRole:
             return self._data[index.row()][index.column()]
+
+    def headerData(self, section, orientation, role):
+        if role == QtCore.Qt.DisplayRole:
+            if orientation == QtCore.Qt.Horizontal:
+                return self._headers[section]
 
     def rowCount(self, index):
         return len(self._data)

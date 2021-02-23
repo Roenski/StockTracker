@@ -32,6 +32,8 @@ class MainWin(QtWidgets.QMainWindow):
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
 
+        self.resize(1400,600)
+
     def list_view_event(self):
         self.list_trans.load_entries()
         self.central_widget.setCurrentWidget(self.list_trans)
