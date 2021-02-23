@@ -14,7 +14,7 @@ class MainWin(QtWidgets.QMainWindow):
         self.central_widget = QtWidgets.QStackedWidget()
         self.setCentralWidget(self.central_widget)
         self.main_menu = Menu()
-        self.database = TransactionDB('db.ini', self.ui.statusbar.showMessage)
+        self.database = TransactionDB("transactions", 'db.ini', self.ui.statusbar.showMessage)
         self.database.connect_db()
         self.add_trans = AddTransactionForm(self.database)
         self.list_trans = ListTransactionForm(self.database)
