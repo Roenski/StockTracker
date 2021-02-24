@@ -75,5 +75,10 @@ class TransactionDB(Database):
         sql_msg = "DELETE FROM {} WHERE tid={}".format(self.name, tid)
         self.cur.execute(sql_msg)
         self.conn.commit()
+        
+class StockDB(Database):
+
+    def __init__(self, name, filename, status_func=print):
+        super().__init__(name, filename, status_func)
 
 
