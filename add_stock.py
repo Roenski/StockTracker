@@ -4,11 +4,54 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QMessageBox
 from datetime import date as dt
 import investpy
+import pandas
+from datetime import date
 
 sTypes = ["Stock", "ETF", "Fund", "Crypto"]
 methods = ["yfinance", "investpy"] 
 
-def get_price_investpy(name, ticker, country):
+def get_price_investpy(sname, sticker, stype, scountry):
+    if stype == "Stock":
+        try:
+            df = investpy.get_stock_recent_data(sname, scountry)
+        except RuntimeError:
+            try:
+                df = investpy.get_stock_recent_data(sticker, scountry)
+            except RuntimeError:
+                raise MethodNotWorkingError
+    elif stype == "Fund":
+        try:
+            df = investpy.get_fund_recent_data(sname, scountry)
+        except RuntimeError:
+            try:
+                df = investpy.get_fund_recent_data(sticker, scountry)
+            except RuntimeError:
+                raise MethodNotWorkingError
+    elif stype == "ETF":
+        try:
+            df = investpy.get_etf_recent_data(sname, scountry)
+        except RuntimeError:
+            try:
+                df = investpy.get_etf_recent_data(sticker, scountry)
+            except RuntimeError:
+                raise MethodNotWorkingError
+    elif stype == "Crypto":
+        try:
+            df = investpy.get_crypto_recent_data(sname)
+        except RuntimeError:
+            try:
+                df = investpy.get_crypto_recent_data(sticker)
+            except RuntimeError:
+                raise MethodNotWorkingError
+    else:
+        raise MethodNotWorkingError
+
+    return df.iloc[-1]['Close']
+
+
+
+class MethodNotWorkingError(Exception):
+    # Raised when method cannot fetch price data
     pass
 
 class InvalidValueError(Exception):
@@ -50,11 +93,20 @@ class Stock(QObject):
             self.scountry = self.verify_scountry(self.scountry, self.stype)
             self.stype = self.verify_stype(self.stype)
             self.smethod = self.verify_smethod(self.smethod)
-            return True
+            print(self.stype)
+            if self.smethod == "investpy":
+                testprice = get_price_investpy(self.sname, self.sticker, 
+                                                self.stype, self.scountry)
+                return True
+            self.erronous.emit("Method not implemented yet")
+            return False
         except InvalidValueError:
             return False
         except ValueError:
             self.erronous.emit("Did you leave some fields blank?")
+            return False
+        except MethodNotWorkingError:
+            self.erronous.emit("Method not working")
             return False
 
 
@@ -100,6 +152,7 @@ class AddStockForm(QtWidgets.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.ui.pushButton_add.clicked.connect(self.add_stock)
+        self.ui.pushButton_test.clicked.connect(self.test_method)
         self.stockdb = db
         self.ui.combo_sType.addItems(sTypes)
         self.ui.combo_sMethod.addItems(methods)
@@ -117,6 +170,20 @@ class AddStockForm(QtWidgets.QWidget):
 
         if stock.verify():
             print(stock.compose_sql())
+
+    def test_method(self):
+        if self.ui.combo_sMethod.currentText() == "investpy":
+            try:
+                sprice = get_price_investpy(self.ui.line_sName.text(),
+                                            self.ui.line_sTicker.text(),
+                                            self.ui.combo_sType.currentText(),
+                                            self.ui.line_scountry.text())
+                self.ui.label_test.setText(str(sprice))
+            except MethodNotWorkingError:
+                self.errorprinter("Method not working")
+        else:
+            self.errorprinter("Method not yet implemented")
+
 
     def errorprinter(self, er_msg):
         msg = QMessageBox()
