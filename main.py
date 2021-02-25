@@ -3,7 +3,7 @@ from gen.main_win import Ui_MainWindow
 from menu import Menu
 from add_trans import AddTransactionForm
 from list_trans import ListTransactionForm
-from db import TransactionDB
+from db import TransactionDB, StockDB
 
 class MainWin(QtWidgets.QMainWindow):
 
@@ -16,6 +16,7 @@ class MainWin(QtWidgets.QMainWindow):
         self.main_menu = Menu()
         self.database = TransactionDB("transactions", 'db.ini', self.ui.statusbar.showMessage)
         self.database.connect_db()
+        self.stockdb = StockDB("stocks", 'db.ini', self.ui.statusbar.showMessage)
         self.add_trans = AddTransactionForm(self.database)
         self.list_trans = ListTransactionForm(self.database)
         self.central_widget.addWidget(self.main_menu)
