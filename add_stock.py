@@ -3,9 +3,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QMessageBox
 from datetime import date as dt
+import investpy
 
 sTypes = ["Stock", "ETF", "Fund", "Crypto"]
 methods = ["yfinance", "investpy"] 
+
+def get_price_investpy(name, ticker, country):
+    pass
 
 class InvalidValueError(Exception):
     # Raised when the value inserted is erronous
@@ -15,22 +19,23 @@ class Stock(QObject):
 
     erronous = pyqtSignal(str)
 
-    def __init__(self, sname, sticker, stype, smethod):
+    def __init__(self, sname, sticker, scountry, stype, smethod):
         super().__init__()
         self.sname = sname
         self.sticker = sticker
+        self.scountry = scountry
         self.stype = stype
         self.smethod = smethod
 
     def compose_sql(self):
         try:
-            num_of_values = 4
+            num_of_values = 5
             sql_msg = "INSERT INTO stocks VALUES ("
-            sql_msg = "DEFAULT, "
+            sql_msg += "DEFAULT, "
             for i in range(0, num_of_values - 1):
                 sql_msg += "'{}, "
             sql_msg += "'{}')"
-            sql_msg = sql_msg.format(self.sname, self.sticker, 
+            sql_msg += sql_msg.format(self.sname, self.sticker, self.scountry, 
                                      self.stype, self.smethod)
             return sql_msg
         except Exception as e:
@@ -42,6 +47,7 @@ class Stock(QObject):
         try:
             self.sname = self.verify_sname(self.sname)
             self.sticker = self.verify_sticker(self.sticker)
+            self.scountry = self.verify_scountry(self.scountry, self.stype)
             self.stype = self.verify_stype(self.stype)
             self.smethod = self.verify_smethod(self.smethod)
             return True
@@ -65,6 +71,13 @@ class Stock(QObject):
             raise InvalidValueError
         else:
             return sticker
+
+    def verify_scountry(self, scountry, stype):
+        if scountry == "" and stype in sTypes[0:3]:
+            self.erronous.emit("Stock country is blank!")
+            raise InvalidValueError
+        else:
+            return scountry
 
     def verify_stype(self, stype):
         if not stype in sTypes:
@@ -95,6 +108,7 @@ class AddStockForm(QtWidgets.QWidget):
         stock = Stock(
             self.ui.line_sName.text(),
             self.ui.line_sTicker.text(),
+            self.ui.line_scountry.text(),
             self.ui.combo_sType.currentText(),
             self.ui.combo_sMethod.currentText()
         )
@@ -102,7 +116,7 @@ class AddStockForm(QtWidgets.QWidget):
         stock.erronous.connect(self.errorprinter)
 
         if stock.verify():
-            print("jee")
+            print(stock.compose_sql())
 
     def errorprinter(self, er_msg):
         msg = QMessageBox()
