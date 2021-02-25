@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'guiMain.ui'
+# Form implementation generated from reading ui file 'ui/guiMain.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.2
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(272, 158)
+        Form.resize(304, 204)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
         self.label_title = QtWidgets.QLabel(Form)
@@ -29,6 +29,9 @@ class Ui_Form(object):
         self.button_add_transaction = QtWidgets.QPushButton(Form)
         self.button_add_transaction.setObjectName("button_add_transaction")
         self.verticalLayout.addWidget(self.button_add_transaction)
+        self.button_add_stock = QtWidgets.QPushButton(Form)
+        self.button_add_stock.setObjectName("button_add_stock")
+        self.verticalLayout.addWidget(self.button_add_stock)
         self.button_list_transactions = QtWidgets.QPushButton(Form)
         self.button_list_transactions.setObjectName("button_list_transactions")
         self.verticalLayout.addWidget(self.button_list_transactions)
@@ -44,6 +47,7 @@ class Ui_Form(object):
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label_title.setText(_translate("Form", "Stock Tracker"))
         self.button_add_transaction.setText(_translate("Form", "Add a transaction"))
+        self.button_add_stock.setText(_translate("Form", "Add a stock"))
         self.button_list_transactions.setText(_translate("Form", "List all transactions"))
         self.button_exit.setText(_translate("Form", "Exit application"))
 

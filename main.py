@@ -3,6 +3,7 @@ from gen.main_win import Ui_MainWindow
 from menu import Menu
 from add_trans import AddTransactionForm
 from list_trans import ListTransactionForm
+from add_stock import AddStockForm
 from db import TransactionDB, StockDB
 
 class MainWin(QtWidgets.QMainWindow):
@@ -18,18 +19,26 @@ class MainWin(QtWidgets.QMainWindow):
         self.database.connect_db()
         self.stockdb = StockDB("stocks", 'db.ini', self.ui.statusbar.showMessage)
         self.add_trans = AddTransactionForm(self.database)
+        self.add_stock = AddStockForm(self.stockdb) 
         self.list_trans = ListTransactionForm(self.database)
         self.central_widget.addWidget(self.main_menu)
         self.central_widget.addWidget(self.add_trans)
+        self.central_widget.addWidget(self.add_stock)
         self.central_widget.addWidget(self.list_trans)
+
         self.ui.actionExit.triggered.connect(self.close)
         self.main_menu.exited.connect(self.close)
         self.main_menu.ui.button_add_transaction.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.add_trans))
-        self.main_menu.ui.button_list_transactions.clicked.connect(self.list_view_event)
+        self.main_menu.ui.button_list_transactions.clicked.connect \
+            (self.list_view_event)
+        self.main_menu.ui.button_add_stock.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.add_stock))
         self.add_trans.ui.pushButton_cancel.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.list_trans.ui.return_btn.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.main_menu))
+        self.add_stock.ui.pushButton_cancel.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
 

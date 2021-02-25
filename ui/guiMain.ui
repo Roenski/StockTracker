@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>272</width>
-    <height>158</height>
+    <width>304</width>
+    <height>204</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,6 +35,13 @@
     <widget class="QPushButton" name="button_add_transaction">
      <property name="text">
       <string>Add a transaction</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="button_add_stock">
+     <property name="text">
+      <string>Add a stock</string>
      </property>
     </widget>
    </item>
