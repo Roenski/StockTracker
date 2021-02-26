@@ -4,11 +4,22 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QMessageBox
 from datetime import date as dt
 import investpy
+import yfinance
 import pandas
 from datetime import date
 
 sTypes = ["Stock", "ETF", "Fund", "Crypto"]
 methods = ["yfinance", "investpy"] 
+
+# Works only with a correct ticker
+def get_price_yfinance(sticker):
+    ticker = yfinance.Ticker(sticker)
+    try:
+        price = ticker.history(period="today").iloc[-1]['Close']
+        return price
+    except Exception as e:
+        raise MethodNotWorkingError
+    
 
 def get_price_investpy(sname, sticker, stype, scountry):
     if stype == "Stock":
@@ -76,9 +87,9 @@ class Stock(QObject):
             sql_msg = "INSERT INTO stocks VALUES ("
             sql_msg += "DEFAULT, "
             for i in range(0, num_of_values - 1):
-                sql_msg += "'{}, "
+                sql_msg += "'{}', "
             sql_msg += "'{}')"
-            sql_msg += sql_msg.format(self.sname, self.sticker, self.scountry, 
+            sql_msg = sql_msg.format(self.sname, self.sticker, self.scountry, 
                                      self.stype, self.smethod)
             return sql_msg
         except Exception as e:
@@ -97,6 +108,9 @@ class Stock(QObject):
             if self.smethod == "investpy":
                 testprice = get_price_investpy(self.sname, self.sticker, 
                                                 self.stype, self.scountry)
+                return True
+            elif self.smethod == 'yfinance':
+                testprice = get_price_yfinance(self.sticker)
                 return True
             self.erronous.emit("Method not implemented yet")
             return False
@@ -124,6 +138,7 @@ class Stock(QObject):
         else:
             return sticker
 
+    # All types but cryptos need to specify their country for investpy
     def verify_scountry(self, scountry, stype):
         if scountry == "" and stype in sTypes[0:3]:
             self.erronous.emit("Stock country is blank!")
@@ -169,7 +184,9 @@ class AddStockForm(QtWidgets.QWidget):
         stock.erronous.connect(self.errorprinter)
 
         if stock.verify():
-            print(stock.compose_sql())
+            sql_msg = stock.compose_sql()
+            print(sql_msg)
+            self.stockdb.insert(sql_msg)
 
     def test_method(self):
         if self.ui.combo_sMethod.currentText() == "investpy":
@@ -178,6 +195,12 @@ class AddStockForm(QtWidgets.QWidget):
                                             self.ui.line_sTicker.text(),
                                             self.ui.combo_sType.currentText(),
                                             self.ui.line_scountry.text())
+                self.ui.label_test.setText(str(sprice))
+            except MethodNotWorkingError:
+                self.errorprinter("Method not working")
+        elif self.ui.combo_sMethod.currentText() == "yfinance":
+            try:
+                sprice = get_price_yfinance(self.ui.line_sTicker.text())
                 self.ui.label_test.setText(str(sprice))
             except MethodNotWorkingError:
                 self.errorprinter("Method not working")

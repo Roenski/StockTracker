@@ -18,6 +18,7 @@ class MainWin(QtWidgets.QMainWindow):
         self.database = TransactionDB("transactions", 'db.ini', self.ui.statusbar.showMessage)
         self.database.connect_db()
         self.stockdb = StockDB("stocks", 'db.ini', self.ui.statusbar.showMessage)
+        self.stockdb.connect_db()
         self.add_trans = AddTransactionForm(self.database)
         self.add_stock = AddStockForm(self.stockdb) 
         self.list_trans = ListTransactionForm(self.database)
