@@ -7,8 +7,11 @@ import investpy
 import yfinance
 import pandas
 from datetime import date
+from add_trans import currencies
 
+# Do not change the order in sTypes! You can append types to the end
 sTypes = ["Stock", "ETF", "Fund", "Crypto"]
+
 methods = ["yfinance", "investpy"] 
 
 # Works only with a correct ticker
@@ -73,24 +76,25 @@ class Stock(QObject):
 
     erronous = pyqtSignal(str)
 
-    def __init__(self, sname, sticker, scountry, stype, smethod):
+    def __init__(self, sname, sticker, scountry, stype, smethod, scurrency):
         super().__init__()
         self.sname = sname
         self.sticker = sticker
         self.scountry = scountry
         self.stype = stype
         self.smethod = smethod
+        self.scurrency = scurrency
 
     def compose_sql(self):
         try:
-            num_of_values = 5
+            num_of_values = 6
             sql_msg = "INSERT INTO stocks VALUES ("
             sql_msg += "DEFAULT, "
             for i in range(0, num_of_values - 1):
                 sql_msg += "'{}', "
             sql_msg += "'{}')"
             sql_msg = sql_msg.format(self.sname, self.sticker, self.scountry, 
-                                     self.stype, self.smethod)
+                                     self.stype, self.smethod, self.scurrency)
             return sql_msg
         except Exception as e:
             self.erronous.emit("Something went wrong.")
@@ -104,6 +108,7 @@ class Stock(QObject):
             self.scountry = self.verify_scountry(self.scountry, self.stype)
             self.stype = self.verify_stype(self.stype)
             self.smethod = self.verify_smethod(self.smethod)
+            self.scurrency = self.verify_scurrency(self.scurrency)
             print(self.stype)
             if self.smethod == "investpy":
                 testprice = get_price_investpy(self.sname, self.sticker, 
@@ -160,6 +165,13 @@ class Stock(QObject):
         else:
             return smethod
 
+    def verify_scurrency(self, scurrency):
+        if not scurrency in currencies:
+            self.erronous.emit("Currency not supported")
+            raise InvalidValueError
+        else:
+            return scurrency
+
 class AddStockForm(QtWidgets.QWidget):
 
     def __init__(self, db):
@@ -171,6 +183,7 @@ class AddStockForm(QtWidgets.QWidget):
         self.stockdb = db
         self.ui.combo_sType.addItems(sTypes)
         self.ui.combo_sMethod.addItems(methods)
+        self.ui.combo_sCurrency.addItems(currencies)
 
     def add_stock(self):
         stock = Stock(
@@ -178,7 +191,8 @@ class AddStockForm(QtWidgets.QWidget):
             self.ui.line_sTicker.text(),
             self.ui.line_scountry.text(),
             self.ui.combo_sType.currentText(),
-            self.ui.combo_sMethod.currentText()
+            self.ui.combo_sMethod.currentText(),
+            self.ui.combo_sCurrency.currentText()
         )
 
         stock.erronous.connect(self.errorprinter)
