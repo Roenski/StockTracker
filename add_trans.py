@@ -8,7 +8,7 @@ from datetime import date as dt
 ttypes = ["Stock", "ETF", "Fund", "Crypto"]
 tBSs = ["Buy", "Sell"]
 sNames = ["Test", "AMD", "OTE1V", "SXR8", "DIS", "EUNK"] # Make a database for these!
-currencies = ["USD", "EUR", "SEK"]
+currencies = ["USD", "EUR", "SEK", "CAD"]
 tBrokers = ["Nordnet", "OP", "Degiro", "Coinmotion"]
 
 class InvalidValueError(Exception):
