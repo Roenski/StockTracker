@@ -7,11 +7,11 @@ ENTRIES_PER_PAGE = 10
 NO_OF_COLUMNS = 13
 
 class ListTransactionForm(QtWidgets.QWidget):
-    def __init__(self, database):
+    def __init__(self, db):
         super().__init__()
         self.ui = Ui_Form() 
         self.ui.setupUi(self)
-        self.db = database
+        self.db = db
 
         self.list_trans = None
         self.page = 0
@@ -24,7 +24,8 @@ class ListTransactionForm(QtWidgets.QWidget):
         self.ui.list_tbl.resizeRowToContents(2)
 
     def load_entries(self):
-        entries = self.db.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
+        sql_msg = self.db.transactions.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
+        entries = self.db.query(sql_msg)
         self.list_trans = ListTransactionTable(entries)
         self.ui.list_tbl.setModel(self.list_trans)
         if len(entries) < ENTRIES_PER_PAGE:
@@ -49,12 +50,6 @@ class ListTransactionForm(QtWidgets.QWidget):
             self.db.delete_entry(row.data())
             self.load_entries()
 
-    def delete_confirm(self, i):
-        if i == QMessageBox.Yes: 
-            print("Jes")
-        elif i == QMessageBox.Cancel:
-            print("kansel")
-        print(i)
     def next_page(self):
         if not self.MAX_PAGE:
             self.page += 1

@@ -4,8 +4,7 @@ from menu import Menu
 from add_trans import AddTransactionForm
 from list_trans import ListTransactionForm
 from add_stock import AddStockForm
-from db import TransactionDB, StockDB
-
+from db import Database
 class MainWin(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -15,12 +14,10 @@ class MainWin(QtWidgets.QMainWindow):
         self.central_widget = QtWidgets.QStackedWidget()
         self.setCentralWidget(self.central_widget)
         self.main_menu = Menu()
-        self.database = TransactionDB("transactions", 'db.ini', self.ui.statusbar.showMessage)
+        self.database = Database("stocktracker", "db.ini", self.ui.statusbar.showMessage)
         self.database.connect_db()
-        self.stockdb = StockDB("stocks", 'db.ini', self.ui.statusbar.showMessage)
-        self.stockdb.connect_db()
         self.add_trans = AddTransactionForm(self.database)
-        self.add_stock = AddStockForm(self.stockdb) 
+        self.add_stock = AddStockForm(self.database) 
         self.list_trans = ListTransactionForm(self.database)
         self.central_widget.addWidget(self.main_menu)
         self.central_widget.addWidget(self.add_trans)
