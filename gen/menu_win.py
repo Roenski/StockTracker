@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(304, 204)
+        Form.resize(506, 409)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
         self.label_title = QtWidgets.QLabel(Form)
@@ -35,6 +35,9 @@ class Ui_Form(object):
         self.button_list_transactions = QtWidgets.QPushButton(Form)
         self.button_list_transactions.setObjectName("button_list_transactions")
         self.verticalLayout.addWidget(self.button_list_transactions)
+        self.button_list_stocks = QtWidgets.QPushButton(Form)
+        self.button_list_stocks.setObjectName("button_list_stocks")
+        self.verticalLayout.addWidget(self.button_list_stocks)
         self.button_exit = QtWidgets.QPushButton(Form)
         self.button_exit.setObjectName("button_exit")
         self.verticalLayout.addWidget(self.button_exit)
@@ -49,6 +52,7 @@ class Ui_Form(object):
         self.button_add_transaction.setText(_translate("Form", "Add a transaction"))
         self.button_add_stock.setText(_translate("Form", "Add a stock"))
         self.button_list_transactions.setText(_translate("Form", "List all transactions"))
+        self.button_list_stocks.setText(_translate("Form", "List all stocks"))
         self.button_exit.setText(_translate("Form", "Exit application"))
 
 

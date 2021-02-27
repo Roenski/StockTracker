@@ -1,19 +1,19 @@
-from gen.list_trans_win import Ui_Form
+from gen.list_stock_win import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtWidgets import QMessageBox
 
 ENTRIES_PER_PAGE = 10
-NO_OF_COLUMNS = 13
+NO_OF_COLUMNS = 6
 
-class ListTransactionForm(QtWidgets.QWidget):
+class ListStockForm(QtWidgets.QWidget):
     def __init__(self, db):
         super().__init__()
         self.ui = Ui_Form() 
         self.ui.setupUi(self)
         self.db = db
 
-        self.list_trans = None
+        self.list_stock = None
         self.page = 0
         self.MAX_PAGE = False
 
@@ -24,10 +24,10 @@ class ListTransactionForm(QtWidgets.QWidget):
         self.ui.list_tbl.resizeRowToContents(2)
 
     def load_entries(self):
-        sql_msg = self.db.transactions.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
+        sql_msg = self.db.stocks.select_all(ENTRIES_PER_PAGE, self.page*ENTRIES_PER_PAGE)
         entries = self.db.query(sql_msg)
-        self.list_trans = ListTransactionTable(entries)
-        self.ui.list_tbl.setModel(self.list_trans)
+        self.list_stock = ListStockTable(entries)
+        self.ui.list_tbl.setModel(self.list_stock)
         if len(entries) < ENTRIES_PER_PAGE:
             self.MAX_PAGE = True
         else:
@@ -47,7 +47,7 @@ class ListTransactionForm(QtWidgets.QWidget):
         #msg.buttonClicked.connect(self.delete_confirm)
         answer = msg.exec_()
         if answer == QMessageBox.Yes:
-            sql_msg = self.db.transactions.delete_entry(row.data())
+            sql_msg = self.db.stocks.delete_entry(row.data())
             self.db.insert(sql_msg)
             self.load_entries()
 
@@ -61,15 +61,13 @@ class ListTransactionForm(QtWidgets.QWidget):
             self.page -= 1
             self.load_entries()
 
-class ListTransactionTable(QtCore.QAbstractTableModel):
+class ListStockTable(QtCore.QAbstractTableModel):
 
     def __init__(self, data_init):
         super().__init__()
         self._data = self.parse_data(data_init)
-        self._headers = ["Transation ID", "Date", "Type", "Buy/Sell",
-                            "Stock Name", "Quantity", "Price",
-                            "Currency", "Exchange Rate", "Fee",
-                            "Fee Currency", "Exchange Rate", "Broker"]
+        self._headers = ["ID", "Name", "Ticker", "Country",
+                            "Type", "Method", "Currency"]
         
     def data(self, index, role):
         if role == Qt.DisplayRole:
@@ -90,12 +88,6 @@ class ListTransactionTable(QtCore.QAbstractTableModel):
         data_p = []
         for i in range(0, len(data_up)):
             entry = list(data_up[i])
-            entry[1] = str(entry[1])
-            entry[5] = str(entry[5])
-            entry[6] = str(entry[6])
-            entry[8] = str(entry[8])
-            entry[9] = str(entry[9])
-            entry[11] = str(entry[11])
             data_p.append(entry)
         return data_p
 

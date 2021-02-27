@@ -20,7 +20,7 @@ class TransactionTable:
         return sql_msg
 
     def delete_entry(self, tid):
-        sql_msg = "DELETE FROM WHERE tid={}".format(tid)
+        sql_msg = "DELETE FROM transactions WHERE tid={}".format(tid)
         return sql_msg
         
 class StockTable:
@@ -29,7 +29,7 @@ class StockTable:
         pass 
 
     def select_all(self, num, offset=0):
-        sql_msg = "SELECT * FROM stocks" \
+        sql_msg = "SELECT * FROM stocks " \
         + "ORDER BY sid ASC LIMIT {} OFFSET {}".format(num, offset)
         return sql_msg
 
