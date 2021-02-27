@@ -20,6 +20,8 @@ class ListTransactionForm(QtWidgets.QWidget):
         self.ui.next_btn.clicked.connect(self.next_page)
         self.ui.prev_btn.clicked.connect(self.prev_page)
         self.ui.delete_btn.clicked.connect(self.delete_entry)
+        self.ui.next_btn.setText("Next {} >".format(ENTRIES_PER_PAGE))
+        self.ui.prev_btn.setText("< Prev {}".format(ENTRIES_PER_PAGE))
         
         self.ui.list_tbl.resizeRowToContents(2)
 

@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtWidgets import QMessageBox
 
-ENTRIES_PER_PAGE = 10
+ENTRIES_PER_PAGE = 12
 NO_OF_COLUMNS = 6
 
 class ListStockForm(QtWidgets.QWidget):
@@ -20,6 +20,8 @@ class ListStockForm(QtWidgets.QWidget):
         self.ui.next_btn.clicked.connect(self.next_page)
         self.ui.prev_btn.clicked.connect(self.prev_page)
         self.ui.delete_btn.clicked.connect(self.delete_entry)
+        self.ui.next_btn.setText("Next {} >".format(ENTRIES_PER_PAGE))
+        self.ui.prev_btn.setText("< Prev {}".format(ENTRIES_PER_PAGE))
         
         self.ui.list_tbl.resizeRowToContents(2)
 
@@ -66,7 +68,7 @@ class ListStockTable(QtCore.QAbstractTableModel):
     def __init__(self, data_init):
         super().__init__()
         self._data = self.parse_data(data_init)
-        self._headers = ["ID", "Name", "Ticker", "Country",
+        self._headers = ["Name", "Ticker", "Country",
                             "Type", "Method", "Currency"]
         
     def data(self, index, role):
@@ -88,6 +90,6 @@ class ListStockTable(QtCore.QAbstractTableModel):
         data_p = []
         for i in range(0, len(data_up)):
             entry = list(data_up[i])
-            data_p.append(entry)
+            data_p.append(entry[1:])
         return data_p
 

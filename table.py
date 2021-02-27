@@ -30,7 +30,7 @@ class StockTable:
 
     def select_all(self, num, offset=0):
         sql_msg = "SELECT * FROM stocks " \
-        + "ORDER BY sid ASC LIMIT {} OFFSET {}".format(num, offset)
+        + "ORDER BY stype, sname ASC LIMIT {} OFFSET {}".format(num, offset)
         return sql_msg
 
     def delete_entry(self, sid):
