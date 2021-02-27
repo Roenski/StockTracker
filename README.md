@@ -7,6 +7,6 @@ The program is made to track your stocks, ETFs, funds and cryptos. Features will
 ** Time-weighter rate of return (TWR)
 ** Performance against index
 ** Distribution between different asset classes
-" Generate a csv (or similar) for your tax reports
+* Generate a csv (or similar) for your tax reports
 
 
