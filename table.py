@@ -33,6 +33,12 @@ class StockTable:
         + "ORDER BY stype, sname ASC LIMIT {} OFFSET {}".format(num, offset)
         return sql_msg
 
+    def select_tickers(self, stype=""):
+        sql_msg = "SELECT sticker FROM stocks" 
+        if stype:
+            sql_msg += " WHERE stype = '{}'".format(stype)
+        return sql_msg
+
     def delete_entry(self, sid):
         sql_msg = "DELETE FROM stocks WHERE sid={}".format(sid)
         return sql_msg

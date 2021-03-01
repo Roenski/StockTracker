@@ -30,6 +30,7 @@ class ListStockForm(QtWidgets.QWidget):
         entries = self.db.query(sql_msg)
         self.list_stock = ListStockTable(entries)
         self.ui.list_tbl.setModel(self.list_stock)
+        self.ui.list_tbl.setColumnHidden(0, True)
         if len(entries) < ENTRIES_PER_PAGE:
             self.MAX_PAGE = True
         else:
@@ -68,8 +69,9 @@ class ListStockTable(QtCore.QAbstractTableModel):
     def __init__(self, data_init):
         super().__init__()
         self._data = self.parse_data(data_init)
-        self._headers = ["Name", "Ticker", "Country",
+        self._headers = ["ID", "Name", "Ticker", "Country",
                             "Type", "Method", "Currency"]
+
         
     def data(self, index, role):
         if role == Qt.DisplayRole:
@@ -90,6 +92,6 @@ class ListStockTable(QtCore.QAbstractTableModel):
         data_p = []
         for i in range(0, len(data_up)):
             entry = list(data_up[i])
-            data_p.append(entry[1:])
+            data_p.append(entry[0:])
         return data_p
 

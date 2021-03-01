@@ -196,8 +196,13 @@ class AddStockForm(QtWidgets.QWidget):
         )
 
         stock.erronous.connect(self.errorprinter)
+        sql_msg = self.stockdb.stocks.select_tickers(stype=self.ui.combo_sType.currentText())
+        tickers_in_db = [item for t in self.stockdb.query(sql_msg) for item in t]
 
-        if stock.verify():
+        if self.ui.line_sTicker.text() in tickers_in_db:
+            self.errorprinter("Ticker already in use!")
+
+        elif stock.verify():
             sql_msg = stock.compose_sql()
             print(sql_msg)
             self.stockdb.insert(sql_msg)
