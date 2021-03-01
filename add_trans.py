@@ -164,10 +164,14 @@ class AddTransactionForm(QtWidgets.QWidget):
         self.db = db
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+
+        sql_msg = self.db.stocks.select_tickers()
+        tickers_in_db = [item for t in self.db.query(sql_msg) for item in t]
+
         self.ui.pushButton_add.clicked.connect(self.add_transaction)
         self.ui.combo_tType.addItems(ttypes)
         self.ui.combo_tBS.addItems(tBSs)
-        self.ui.combo_sName.addItems(sNames)
+        self.ui.combo_sName.addItems(tickers_in_db)
         self.ui.combo_sPriceCurrency.addItems(currencies)
         self.ui.combo_sFeeCurrency.addItems(currencies)
         self.ui.combo_tBroker.addItems(tBrokers)
