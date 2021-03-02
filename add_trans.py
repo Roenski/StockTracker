@@ -7,7 +7,6 @@ from datetime import date as dt
 # These should probably come from a file in the future
 ttypes = ["Stock", "ETF", "Fund", "Crypto"]
 tBSs = ["Buy", "Sell"]
-sNames = ["Test", "AMD", "OTE1V", "SXR8", "DIS", "EUNK"] # Make a database for these!
 currencies = ["USD", "EUR", "SEK", "CAD"]
 tBrokers = ["Nordnet", "OP", "Degiro", "Coinmotion"]
 
@@ -61,7 +60,6 @@ class Transaction(QObject):
             self.tdate = self.verify_tdate(self.tdate)
             self.ttype = self.verify_ttype(self.ttype)
             self.tbs = self.verify_tbs(self.tbs)
-            self.sname = self.verify_sname(self.sname)
             self.squantity = self.verify_squantity(self.squantity)
             self.sprice = self.verify_sprice(self.sprice)
             self.spricecurrency = self.verify_spricecurrency(self.spricecurrency)
@@ -101,12 +99,13 @@ class Transaction(QObject):
             raise InvalidValueError
         else:
             return tbs
-    def verify_sname(self, sname):
-        if not sname in sNames:
-            self.erronous.emit("Stock not added to the list")
-            raise InvalidValueError
-        else:
-            return sname
+    # I think this is well enough verified by fetching them from the database
+    #def verify_sname(self, sname):
+        #if not sname in sNames:
+            #self.erronous.emit("Stock not added to the list")
+            #raise InvalidValueError
+        #else:
+            #return sname
     def verify_squantity(self, squantity):
         if float(squantity) <= 0:
             self.erronous.emit("Stock quantity cannot be under 0. Use sell-type for sales.")

@@ -16,7 +16,7 @@ class TransactionTable:
 
     def select_all(self, num, offset=0):
         sql_msg = "SELECT * FROM transactions " \
-        + "ORDER BY tid ASC LIMIT {} OFFSET {}".format(num, offset)
+        + "ORDER BY tdate ASC LIMIT {} OFFSET {}".format(num, offset)
         return sql_msg
 
     def delete_entry(self, tid):

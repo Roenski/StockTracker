@@ -15,12 +15,17 @@ class Database:
         self.stocks = StockTable()
 
     def insert(self, sql_msg):
+        self.connect_db()
         self.cur.execute(sql_msg)
         self.conn.commit()
+        self.close()
 
     def query(self, sql_msg):
+        self.connect_db()
         self.cur.execute(sql_msg)
-        return self.cur.fetchall()
+        ans = self.cur.fetchall()
+        self.close()
+        return ans
 
     def config(self):
         parser = configparser.ConfigParser()

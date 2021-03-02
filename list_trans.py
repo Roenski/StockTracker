@@ -27,8 +27,13 @@ class ListTransactionForm(QtWidgets.QWidget):
 
     def load_entries(self):
         sql_msg = self.db.transactions.select_all(ENTRIES_PER_PAGE+1, self.page*ENTRIES_PER_PAGE)
+        print(sql_msg)
         entries = self.db.query(sql_msg)
-        self.list_trans = ListTransactionTable(entries[0:-1])
+        print(entries)
+        if len(entries) > ENTRIES_PER_PAGE:
+            self.list_trans = ListTransactionTable(entries[0:-1])
+        else:
+            self.list_trans = ListTransactionTable(entries)
         self.ui.list_tbl.setModel(self.list_trans)
         if len(entries) < ENTRIES_PER_PAGE+1:
             self.MAX_PAGE = True
