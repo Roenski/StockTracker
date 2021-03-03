@@ -39,6 +39,10 @@ class StockTable:
             sql_msg += " WHERE stype = '{}'".format(stype)
         return sql_msg
 
+    def get_type(self, ticker):
+        sql_msg = "SELECT stype FROM stocks WHERE sticker = '{}'".format(ticker)
+        return sql_msg
+
     def delete_entry(self, sid):
         sql_msg = "DELETE FROM stocks WHERE sid={}".format(sid)
         return sql_msg

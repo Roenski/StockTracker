@@ -194,11 +194,16 @@ class AddTransactionForm(QtWidgets.QWidget):
         # In the case of an error, the error message is sent
         # via a pyqt signal
         trans.erronous.connect(self.errorprinter)
+
+        sql_msg = self.db.stocks.get_type(self.ui.combo_sName.currentText())
+        correct_type = self.db.query(sql_msg)[0][0]
         
         if trans.verify():
-            sql_msg = trans.compose_sql()
-            self.db.insert(sql_msg)
-            print(sql_msg)
+            if self.ui.combo_tType.currentText() == correct_type:
+                sql_msg = trans.compose_sql()
+                self.db.insert(sql_msg)
+            else:
+                self.errorprinter("Entered stock has different type than in the database")
 
     def errorprinter(self, er_msg):
         msg = QMessageBox()
