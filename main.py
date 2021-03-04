@@ -18,7 +18,7 @@ class MainWin(QtWidgets.QMainWindow):
         self.database = Database("stocktracker", "db.ini", self.ui.statusbar.showMessage)
         self.database.connect_db()
         self.database.close()
-        self.add_trans = AddTransactionForm(self.database)
+        self.add_trans = AddTransactionForm(self.database, self.ui.statusbar.showMessage)
         self.add_stock = AddStockForm(self.database) 
         self.list_trans = ListTransactionForm(self.database)
         self.list_stocks = ListStockForm(self.database) 

@@ -157,12 +157,13 @@ class Transaction(QObject):
 
 class AddTransactionForm(QtWidgets.QWidget):
 
-    def __init__(self, db):
+    def __init__(self, db, status_func):
         super().__init__()
         # Database to add transactions to
         self.db = db
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.status_func = status_func
 
         sql_msg = self.db.stocks.select_tickers()
         tickers_in_db = [item for t in self.db.query(sql_msg) for item in t]
@@ -201,7 +202,13 @@ class AddTransactionForm(QtWidgets.QWidget):
         if trans.verify():
             if self.ui.combo_tType.currentText() == correct_type:
                 sql_msg = trans.compose_sql()
-                self.db.insert(sql_msg)
+                try:
+                    self.db.insert(sql_msg)
+                    status_msg = "Successfully added a transaction of {} to database {}.".format(trans.sname, self.db.name)
+                    self.status_func(status_msg)
+                except Exception as e:
+                    self.status_func("Caught an error, see console for details.")
+                    print(e)
             else:
                 self.errorprinter("Entered stock has different type than in the database")
 
