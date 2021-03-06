@@ -5,6 +5,7 @@ from add_trans import AddTransactionForm
 from list_trans import ListTransactionForm
 from list_stock import ListStockForm
 from add_stock import AddStockForm
+from distribution import DistributionForm
 from db import Database
 class MainWin(QtWidgets.QMainWindow):
 
@@ -22,11 +23,13 @@ class MainWin(QtWidgets.QMainWindow):
         self.add_stock = AddStockForm(self.database) 
         self.list_trans = ListTransactionForm(self.database)
         self.list_stocks = ListStockForm(self.database) 
+        self.distribution = DistributionForm(self.database)
         self.central_widget.addWidget(self.main_menu)
         self.central_widget.addWidget(self.add_trans)
         self.central_widget.addWidget(self.add_stock)
         self.central_widget.addWidget(self.list_trans)
         self.central_widget.addWidget(self.list_stocks)
+        self.central_widget.addWidget(self.distribution)
 
         self.ui.actionExit.triggered.connect(self.close)
         self.main_menu.exited.connect(self.close)
@@ -38,6 +41,8 @@ class MainWin(QtWidgets.QMainWindow):
             (self.list_stock_event)
         self.main_menu.ui.button_add_stock.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.add_stock))
+        self.main_menu.ui.button_distribution.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.distribution))
         self.add_trans.ui.pushButton_cancel.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.list_trans.ui.return_btn.clicked.connect \
@@ -45,6 +50,8 @@ class MainWin(QtWidgets.QMainWindow):
         self.add_stock.ui.pushButton_cancel.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.list_stocks.ui.return_btn.clicked.connect \
+            (lambda: self.central_widget.setCurrentWidget(self.main_menu))
+        self.distribution.ui.return_btn.clicked.connect \
             (lambda: self.central_widget.setCurrentWidget(self.main_menu))
         self.central_widget.setCurrentWidget(self.main_menu)
 

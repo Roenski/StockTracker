@@ -32,6 +32,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="button_distribution">
+     <property name="text">
+      <string>Show distribution</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="button_add_transaction">
      <property name="text">
       <string>Add a transaction</string>

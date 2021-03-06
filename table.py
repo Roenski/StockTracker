@@ -19,6 +19,12 @@ class TransactionTable:
         + "ORDER BY tdate ASC LIMIT {} OFFSET {}".format(num, offset)
         return sql_msg
 
+    def select_by_type(self, ttype):
+        sql_msg = "SELECT * FROM transactions " \
+        + "INNER JOIN stocks ON transactions.sname = stocks.sticker " \
+        + "WHERE transactions.ttype = '{}' ".format(ttype) 
+        return sql_msg
+
     def delete_entry(self, tid):
         sql_msg = "DELETE FROM transactions WHERE tid={}".format(tid)
         return sql_msg

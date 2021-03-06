@@ -26,6 +26,9 @@ class Ui_Form(object):
         self.label_title.setAlignment(QtCore.Qt.AlignCenter)
         self.label_title.setObjectName("label_title")
         self.verticalLayout.addWidget(self.label_title)
+        self.button_distribution = QtWidgets.QPushButton(Form)
+        self.button_distribution.setObjectName("button_distribution")
+        self.verticalLayout.addWidget(self.button_distribution)
         self.button_add_transaction = QtWidgets.QPushButton(Form)
         self.button_add_transaction.setObjectName("button_add_transaction")
         self.verticalLayout.addWidget(self.button_add_transaction)
@@ -49,6 +52,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label_title.setText(_translate("Form", "Stock Tracker"))
+        self.button_distribution.setText(_translate("Form", "Show distribution"))
         self.button_add_transaction.setText(_translate("Form", "Add a transaction"))
         self.button_add_stock.setText(_translate("Form", "Add a stock"))
         self.button_list_transactions.setText(_translate("Form", "List all transactions"))
