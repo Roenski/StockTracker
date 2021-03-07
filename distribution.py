@@ -7,17 +7,29 @@ from add_stock import get_price_investpy, get_price_yfinance
 from decimal import *
 import datetime
 
+def get_quantity_remaining(db, stype, sname):
+    if stype in ttypes:
+        # Get all buy and sell transactions separately
+        # This method automatically orders the transactions by date
+        sql_msg = db.transactions.get_count_of_bs("Buy", stype, sname)
+        buy_entries = db.query(sql_msg)
+        sql_msg = db.transactions.get_count_of_bs("Sell", stype, sname)
+        sell_entries = db.query(sql_msg)
+        return buy_entries[0][0] - (sell_entries[0][0] if sell_entries[0][0] else 0)
+
 
 # Calculates gains using FIFO principle
+# In this context, gains means the difference between buy and sell price
 def calculate_gains(db, stype):
     if stype in ttypes:
         # Get all different tickers in this type
-        # This method automatically orders the transactions by date
         sql_msg = db.transactions.select_names_by_type(stype)
         names = db.query(sql_msg)
         gains = 0
         for name in names:
             name = name[0]
+            # Get all buy and sell transactions separately
+            # This method automatically orders the transactions by date
             sql_msg = db.transactions.select_by_bs_type_name("Buy", stype, name)
             buy_entries = db.query(sql_msg)
             sql_msg = db.transactions.select_by_bs_type_name("Sell", stype, name)
@@ -26,7 +38,6 @@ def calculate_gains(db, stype):
             buys = []
             sells = []
             for buy in buy_entries:
-                print(buy[1])
                 entry = []
                 entry.append(buy[5]) 
                 # Total unit price in euros
@@ -70,15 +81,23 @@ class DistributionForm(QtWidgets.QWidget):
         self._data.append(self.load_type(ttypes[2]))
         self._data.append(self.load_type(ttypes[3]))
 
-        calculate_gains(self.db, "Stock")
+        gains = 0
+        gains += calculate_gains(self.db, "Stock")
+        gains += calculate_gains(self.db, "ETF")
+        gains += calculate_gains(self.db, "Fund")
+        gains += calculate_gains(self.db, "Crypto")
+        #print(gains)
         #print(self._data)
 
     def load_type(self, stype):
         sql_msg = self.db.transactions.select_by_type(stype)
         entries = self.db.query(sql_msg)
         entries = self.parse_data(entries)
-        total_invested = self.get_total_invested(entries)
-        #current_value = self.get_current_value(entries)
+        total_invested = self.get_total_invested_by_type(stype)
+        current_value = self.get_current_value_by_type(stype)
+        #print(stype)
+        #print(total_invested)
+        print(current_value)
         return entries
 
     def parse_data(self, data):
@@ -95,19 +114,22 @@ class DistributionForm(QtWidgets.QWidget):
     # 8: Exchange rate
     # 9: Fee
     # 11: Exchange rate
-    def get_total_invested(self, data):
+    def get_total_invested_by_type(self, stype):
+        sql_msg = self.db.transactions.select_by_type(stype)
+        entries = self.db.query(sql_msg)
+        entries = self.parse_data(entries)
         total = 0
-        for entry in data:
+        for entry in entries:
             amount_core = entry[5]*entry[6]*entry[8]
             amount_fee = entry[9]*entry[11] 
-            amount_total = amount_core + amount_fee
             if entry[3] == 'Buy':
-                total += amount_total
+                total += amount_core + amount_fee
             elif entry[3] == "Sell":
-                pass
+                total -= amount_core - amount_fee
             else:
                 raise ValueError("Type was not either Buy or Sell!")
         return total
+
         
     # Interesting columns are
     # 3: Buy/Sell
@@ -116,10 +138,32 @@ class DistributionForm(QtWidgets.QWidget):
     # 14&15&16: name, ticker, and country
     # 17: type
     # 18: method
-    def get_current_value(self, data):
+    def get_current_value_by_type(self, stype):
         total = 0
-        for entry in data:
-            pass
+        # Get all different tickers in this type
+        sql_msg = self.db.transactions.select_names_by_type(stype)
+        names = self.db.query(sql_msg)
+        for name in names:
+            name = name[0]
+            quantity = get_quantity_remaining(self.db, stype, name)
+            sql_msg = self.db.stocks.get_method(name)
+            method = self.db.query(sql_msg)
+            method = method[0][0]
+            if method == "investpy":
+                sql_msg = self.db.stocks.get_full_name(name)
+                full_name = self.db.query(sql_msg)
+                full_name = full_name[0][0]
+                sql_msg = self.db.stocks.get_country(name)
+                country = self.db.query(sql_msg)
+                country = country[0][0]
+                current_price = get_price_investpy(full_name, name, stype, country)
+            elif method == "yfinance":
+                current_price = get_price_yfinance(name)
+            else:
+                raise ValueError("Incorrect method!")
+            total += float(quantity)*float(current_price)
+        return total
+
 
 class DistributionTable(QtCore.QAbstractTableModel):
 
