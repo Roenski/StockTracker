@@ -19,10 +19,39 @@ class TransactionTable:
         + "ORDER BY tdate ASC LIMIT {} OFFSET {}".format(num, offset)
         return sql_msg
 
+    # Buy/Sell
+    def select_by_bs(self, tbs):
+        sql_msg = "SELECT * FROM transactions " \
+            + "INNER JOIN stocks ON transactions.sname = stocks.sticker " \
+            + "WHERE transactions.tbs = '{}'".format(tbs)
+        return sql_msg
+
+    def select_by_bs_type_name(self, tbs, ttype, sticker):
+        sql_msg = "SELECT * FROM transactions " \
+            + "INNER JOIN stocks ON transactions.sname = stocks.sticker " \
+            + "WHERE (transactions.tbs = '{}' ".format(tbs) \
+            + "AND transactions.ttype = '{}'".format(ttype) \
+            + "AND stocks.sticker = '{}') ".format(sticker) \
+            + "ORDER BY transactions.tdate"
+        return sql_msg
+
+    def select_by_bs_and_type(self, tbs, ttype):
+        sql_msg = "SELECT * FROM transactions " \
+            + "INNER JOIN stocks ON transactions.sname = stocks.sticker " \
+            + "WHERE (transactions.tbs = '{}' ".format(tbs) \
+            + "AND transactions.ttype = '{}')".format(ttype)
+        return sql_msg
+
+    # type = ETF, Stock, Fund, Crypto etc..
     def select_by_type(self, ttype):
         sql_msg = "SELECT * FROM transactions " \
         + "INNER JOIN stocks ON transactions.sname = stocks.sticker " \
         + "WHERE transactions.ttype = '{}' ".format(ttype) 
+        return sql_msg
+
+    def select_names_by_type(self, ttype):
+        sql_msg = "SELECT DISTINCT sname FROM transactions " \
+        + "WHERE ttype = '{}'".format(ttype) 
         return sql_msg
 
     def delete_entry(self, tid):
