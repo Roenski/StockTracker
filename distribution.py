@@ -4,6 +4,7 @@ from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtWidgets import QMessageBox
 from add_trans import ttypes
 from add_stock import get_price_investpy, get_price_yfinance
+import investpy
 from decimal import *
 import datetime
 
@@ -149,6 +150,13 @@ class DistributionForm(QtWidgets.QWidget):
             sql_msg = self.db.stocks.get_method(name)
             method = self.db.query(sql_msg)
             method = method[0][0]
+            sql_msg = self.db.stocks.get_currency(name)
+            currency = self.db.query(sql_msg)
+            currency = currency[0][0]
+            exchange_rate = 1
+            if currency != 'EUR':
+                exchange_rate = investpy.get_currency_cross_recent_data(currency_cross='{}/EUR'.format(currency)).iloc[-1]['Close']
+
             if method == "investpy":
                 sql_msg = self.db.stocks.get_full_name(name)
                 full_name = self.db.query(sql_msg)
@@ -156,9 +164,9 @@ class DistributionForm(QtWidgets.QWidget):
                 sql_msg = self.db.stocks.get_country(name)
                 country = self.db.query(sql_msg)
                 country = country[0][0]
-                current_price = get_price_investpy(full_name, name, stype, country)
+                current_price = exchange_rate*get_price_investpy(full_name, name, stype, country)
             elif method == "yfinance":
-                current_price = get_price_yfinance(name)
+                current_price = exchange_rate*get_price_yfinance(name)
             else:
                 raise ValueError("Incorrect method!")
             total += float(quantity)*float(current_price)

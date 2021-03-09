@@ -97,6 +97,10 @@ class StockTable:
         sql_msg = "SELECT scountry FROM stocks WHERE sticker = '{}'".format(ticker)
         return sql_msg
 
+    def get_currency(self, ticker):
+        sql_msg = "SELECT scurrency FROM stocks WHERE sticker = '{}'".format(ticker)
+        return sql_msg
+
     def delete_entry(self, sid):
         sql_msg = "DELETE FROM stocks WHERE sid={}".format(sid)
         return sql_msg
